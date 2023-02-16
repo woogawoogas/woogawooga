@@ -51,19 +51,18 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false,
+  reactStrictMode: true,
   images: {
-     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: "s3.ap-northeast-2.amazonaws.com","image.tmdb.org"
-      }],
-    images: {
-      sizes: "250px",
-    },
+    domains: ["s3.ap-northeast-2.amazonaws.com", "image.tmdb.org"],
+    // 이미지 너비 목록을 지정 (화면의 전체 너비보다 작은 이미지)
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    deviceSizes: [640, 828, 1080, 1920],
+    // 예상 장치 너비를 알고 있는 경우 breakingPoint 적용
+    deviceSizes: [280, 320, 384, 414, 640, 768, 820, 1080, 1920],
     quality: 50,
+    // 캐시로 60초간 이미지를 가지고 있는다.
+    minimumCacheTTL: 40,
+    formats: ["image/avif", "image/webp"],
+    disableStaticImages: false,
   },
   env: {
     BASE_URL: process.env.BASE_URL,

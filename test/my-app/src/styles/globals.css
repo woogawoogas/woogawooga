@@ -51,6 +51,12 @@ iframe {
   object-fit: contain;
   object-position: top center;
 }
+.next-image-div{
+display: block;
+position: relative;
+width :300px;
+aspect-ratio: 2/1;
+}
 
 h1 {
   font-family: Georgia, serif;
