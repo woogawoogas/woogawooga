@@ -1,22 +1,23 @@
-import DefaultHead from "@/utils/defaultHead";
-import { Main, NextScript, Head, Html } from "next/document";
+import DefaultHead from "@/utils/defaultHead"
+import {Main, NextScript, Head, Html} from "next/document"
+import {ServerStyleSheet} from " styled-components "
+
 export default class MyDocument extends Document {
-  static async getInitialProps(ctx) {
-    const sheet = new ServerStyleSheet();
-    const originalRenderPage = ctx.renderPage;
+  static async getServerSideProps(ctx) {
+    const sheet = new ServerStyleSheet()
   }
 
   render() {
     return (
-      <Html lang="ko">
+      <Html lang='ko'>
         <Head>
           <DefaultHead />
         </Head>
-        <header>s</header>
+        <header></header>
         <Main />
         <NextScript />
-        <footer>ㅇ</footer>
+        <footer></footer>
       </Html>
-    );
+    )
   }
 }

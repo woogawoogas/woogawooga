@@ -1,10 +1,8 @@
-import styled from "styled-components";
-import Image from "next/image";
-
-export const StyledImage = styled(Image)`
-  max-inline-size: 100%;
-  block-size: auto;
-  object-fit: contain;
-  object-position: top center;
-  aspect-ratio: ${(props) => props.aspectRatio || ""};
-`;
+export const stylesImg = {
+  maxInlineSize: "100%",
+  blockSize: "auto",
+  objectFit: "fill",
+  width: "300px",
+  height: "300px",
+  borderRadius: "20px",
+};

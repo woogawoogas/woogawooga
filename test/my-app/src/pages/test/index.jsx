@@ -1,29 +1,93 @@
+"useclient";
+import React, { useState } from "react";
+import Image from "next/image";
+
+import imageCompression from "browser-image-compression";
+
 import test from "/public/test.png";
-import { StyledImage } from "@/styles/Image.styles";
+
+import { stylesImg } from "@/styles/Image.styles";
 import DefaultHead from "@/utils/defaultHead";
 
 export default function Test() {
-  return (
-    <>
-      {/* <div style={{position: "relative", width: "300px", aspectRatio: "4/3"}}> */}
-      {/* 로컬 이미지 사용 시 import 후 적용 하며 width / height 적용 없이 자동 결정 누적 레이아웃 이동을height 방지*/}
-      <DefaultHead title="이미지" content="테스트" seo="테스트" />
-      <StyledImage
-        src={test}
-        alt="이미지 에러"
-        width={800}
-        height={500}
-        layout="responsive"
-        sizes="(max-width: 600px) 100px, (min-width: 601px) 200px"
-      />
-      {/* 원격 이미지 사용 시 width height blurDataURL 속성 필요  */}
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewSource, setPreviewSource] = useState("");
 
-      <input
-        type="file"
-        id="file-upload"
-        // onChange={handleFileChange}
-        accept="image/*"
+  const [file, setFile] = useState(null);
+  const [fileUrl, setFileUrl] = useState("");
+
+  const imageHandleCompress = async (e) => {
+    let file = e.target.files[0];
+    const options = {
+      maxSizeMB: 0.7,
+      maxWidthorHeight: 1000,
+      useWebWorker: true,
+    };
+    try {
+      const compressedFile = await imageCompression(file, options);
+      setFile(compressedFile);
+      const promise = imageCompression.getDataUrlFromFile(compressedFile);
+      promise.then((result) => {
+        setFileUrl(result);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleFileInputChange = (e) => {
+    const file = e.target.files[0];
+    previewFile(file);
+    setSelectedFile(file);
+  };
+
+  const previewFile = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setPreviewSource(reader.result);
+    };
+  };
+
+  return (
+    <React.Fragment>
+      {/* head 추가 */}
+      <DefaultHead
+        title="이미지"
+        desrciption="테스트"
+        seo="테스트"
+        keyword="image"
       />
-    </>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)" }}>
+        {/* 최적화 이미지 */}
+        <div style={{ width: "50%", height: "100%" }}>
+          <Image
+            src={test}
+            style={stylesImg}
+            alt="A picture"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        {/* 기본 nextimg */}
+        <Image src="/test.png" width={300} height={300} alt="image" />
+      </div>
+
+      {/* 기본 파일 Input */}
+      <div style={{ border: "5px solid pink" }}>
+        <input type="file" name="image/*" onChange={handleFileInputChange} />
+        {previewSource && (
+          <Image src={previewSource} alt="Preview" width={100} height={100} />
+        )}
+      </div>
+
+      {/* 압축 사용한 Input  */}
+      <div style={{ border: "5px solid #5781d5" }}>
+        <input type="file" accept="image/*" onChange={imageHandleCompress} />
+        {fileUrl && (
+          <Image src={fileUrl} alt="profile_img" width={100} height={100} />
+        )}
+      </div>
+    </React.Fragment>
   );
 }
